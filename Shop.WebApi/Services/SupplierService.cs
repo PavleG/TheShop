@@ -24,10 +24,7 @@ public class SupplierService : ISupplierService
     {
         Article article = null;
         Article tmp = null;
-        var articleExists = _cachedSupplier.ArticleInInventory(id);
-        if (articleExists)
-        {
-            tmp = _cachedSupplier.GetArticle(id);
+        bool articleExists;
             if (maxExpectedPrice < tmp.ArticlePrice)
             {
                 articleExists = await _warehouse.ArticleInInventoryAsync(id);
@@ -55,12 +52,7 @@ public class SupplierService : ISupplierService
                         }
                     }
                 }
-                if (article != null)
-                {
-                    _cachedSupplier.SetArticle(article);
-                }
             }
-        }
 
         return article;
     }

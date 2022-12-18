@@ -19,9 +19,9 @@ public class ShopController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public Article GetArtice(int id, int maxExpectedPrice = 200)
+    public async Task<IActionResult> GetArtice(int id, int maxExpectedPrice = 200)
     {
-        return _supplierService.GetArticeAsync(id, maxExpectedPrice);
+        return Ok(await _supplierService.GetArticeAsync(id, maxExpectedPrice));
     }
 
     [HttpPost]

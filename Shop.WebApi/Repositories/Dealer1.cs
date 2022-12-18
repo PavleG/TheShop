@@ -23,14 +23,14 @@ public class Dealer1 : IArticleRepository
 
     }
 
-    public async Task<bool> ArticleInInventoryAsync(int id)
+    public async Task<bool> ArticleInInventoryAsync(int id, CancellationToken cancellationToken = default)
     {
         var methodRoute = $"/ArticleInInventory/{id}";
         var response = await _httpClient.GetFromJsonAsync<bool>(_httpClient.BaseAddress + methodRoute);
         return response;
     }
 
-    public async Task<Article?> GetArticleAsync(int id)
+    public async Task<Article?> GetArticleAsync(int id, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetFromJsonAsync<Article>(_httpClient.BaseAddress + $"/{id}");
         return response;

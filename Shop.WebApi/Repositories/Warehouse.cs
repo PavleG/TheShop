@@ -4,12 +4,12 @@ namespace Shop.WebApi.Repositories;
 
 public class Warehouse : IArticleRepository
 {
-    public async Task<bool> ArticleInInventoryAsync(int id)
+    public async Task<bool> ArticleInInventoryAsync(int id, CancellationToken cancellationToken = default)
     {
         return await Task.Run(() => (new Random().NextDouble() >= 0.5));   
     }
 
-    public async Task<Article?> GetArticleAsync(int id)
+    public async Task<Article?> GetArticleAsync(int id, CancellationToken cancellationToken = default)
     {
         return new Article()
         {

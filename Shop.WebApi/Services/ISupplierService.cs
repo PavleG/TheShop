@@ -1,10 +1,9 @@
 ﻿using Shop.WebApi.Models;
 
-namespace Shop.WebApi.Services
+namespace Shop.WebApi.Services;
+
+public interface ISupplierService
 {
-    public interface ISupplierService
-    {
-        void BuyArticle(Article article, int buyerId);
-        Article GetArticeAsync(int id, int maxExpectedPrice = 200);
-    }
+    void BuyArticle(Article article, int buyerId);
+    Task<Article> GetArticeAsync(int id, int maxExpectedPrice = 200);
 }

@@ -1,23 +1,41 @@
-﻿using Shop.WebApi.Models;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Shop.WebApi.Models;
 
 namespace Shop.WebApi.Repositories;
 
-public class CachedSupplier
+public class CachedSupplier : IArticleRepository
 {
-    private Dictionary<int, Article> _cachedArticles = new Dictionary<int, Article>();
-    public bool ArticleInInventory(int id)
+    //private Dictionary<int, Article> _cachedArticles = new Dictionary<int, Article>();
+    private readonly IMemoryCache _memoryCache;
+    private readonly IArticleRepository _articleRepository;
+
+    public CachedSupplier(IMemoryCache memoryCache, IArticleRepository articleRepository)
     {
-        return _cachedArticles.ContainsKey(id);
+        _memoryCache = memoryCache;
+        _articleRepository = articleRepository;
     }
 
-    public Article GetArticle(int id)
+    public async Task<bool> ArticleInInventoryAsync(int id, CancellationToken cancellationToken = default)
     {
-        _cachedArticles.TryGetValue(id, out Article article);
-        return article;
+        string key = $"article-{id}";
+        return await _memoryCache.GetOrCreateAsync( 
+            key,
+            async entry =>
+            {
+                entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
+                return await _articleRepository.ArticleInInventoryAsync(id, cancellationToken);
+            });
     }
 
-    public void SetArticle(Article article)
+    public async Task<Article?> GetArticleAsync(int id, CancellationToken cancellationToken = default)
     {
-        _cachedArticles.Add(article.ID, article);
+        string key = $"article-{id}";
+        return await _memoryCache.GetOrCreateAsync(
+            key,
+            async entry =>
+            {
+                entry.SetAbsoluteExpiration(TimeSpan.FromHours(2));
+                return await _articleRepository.GetArticleAsync(id, cancellationToken);
+            });
     }
 }
