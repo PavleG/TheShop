@@ -13,7 +13,7 @@ public class Warehouse : IArticleRepository
     {
         return new Article()
         {
-            ID = id,
+            Id = id,
             ArticleName = $"Article {id}",
             ArticlePrice = new Random().Next(100, 500)
         };
