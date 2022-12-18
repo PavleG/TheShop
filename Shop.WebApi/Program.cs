@@ -9,9 +9,9 @@ builder.Services.Configure<Dealer1Settings>(builder.Configuration.GetSection(nam
 builder.Services.Configure<Dealer2Settings>(builder.Configuration.GetSection(nameof(Dealer2Settings)));
 
 builder.Services.AddScoped<Db>();
-builder.Services.AddScoped<IArticleRepository, Warehouse>();
-builder.Services.AddHttpClient<IArticleRepository, Vendor<Dealer1Settings>>();
-builder.Services.AddHttpClient<IArticleRepository, Vendor<Dealer2Settings>>();
+builder.Services.AddScoped<IArticleProvider, Warehouse>();
+builder.Services.AddHttpClient<IArticleProvider, Vendor<Dealer1Settings>>();
+builder.Services.AddHttpClient<IArticleProvider, Vendor<Dealer2Settings>>();
 
 //builder.Services.Decorate<IArticleRepository, CachedSupplier>();
 builder.Services.AddMemoryCache();

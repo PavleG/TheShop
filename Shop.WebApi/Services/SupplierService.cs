@@ -7,18 +7,12 @@ namespace Shop.WebApi.Services;
 public class SupplierService : ISupplierService
 {
     private readonly Db _db;
-    private readonly IEnumerable<IArticleRepository> _articleRepositories;
+    private readonly IEnumerable<IArticleProvider> _articleRepositories;
 
-    //private readonly Warehouse _warehouse;
-    //private readonly Dealer1 _dealer1;
-    //private readonly Dealer2 _dealer2;
-    public SupplierService(Db db, IEnumerable<IArticleRepository> articleRepositories)
+    public SupplierService(Db db, IEnumerable<IArticleProvider> articleRepositories)
     {
         _db = db;
         _articleRepositories = articleRepositories;
-        //_warehouse = (Warehouse)articleRepositories.FirstOrDefault(r => r.GetType() == typeof(Warehouse));
-        //_dealer1 = (Dealer1) articleRepositories.FirstOrDefault(r => r.GetType() == typeof(Dealer1));
-        //_dealer2 = (Dealer2) articleRepositories.FirstOrDefault(r => r.GetType() == typeof(Dealer2));
     }
 
     public async Task<Article> GetArticeAsync(int id, int maxExpectedPrice = 200)

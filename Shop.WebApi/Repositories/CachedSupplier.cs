@@ -3,13 +3,13 @@ using Shop.WebApi.Models;
 
 namespace Shop.WebApi.Repositories;
 
-public class CachedSupplier : IArticleRepository
+public class CachedSupplier : IArticleProvider
 {
     //private Dictionary<int, Article> _cachedArticles = new Dictionary<int, Article>();
     private readonly IMemoryCache _memoryCache;
-    private readonly IArticleRepository _articleRepository;
+    private readonly IArticleProvider _articleRepository;
 
-    public CachedSupplier(IMemoryCache memoryCache, IArticleRepository articleRepository)
+    public CachedSupplier(IMemoryCache memoryCache, IArticleProvider articleRepository)
     {
         _memoryCache = memoryCache;
         _articleRepository = articleRepository;

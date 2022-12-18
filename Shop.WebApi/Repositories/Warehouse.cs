@@ -2,7 +2,7 @@
 
 namespace Shop.WebApi.Repositories;
 
-public class Warehouse : IArticleRepository
+public class Warehouse : IArticleProvider
 {
     public async Task<bool> ArticleInInventoryAsync(int id, CancellationToken cancellationToken = default)
     {

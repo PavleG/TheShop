@@ -4,7 +4,7 @@ using Shop.WebApi.Models;
 
 namespace Shop.WebApi.Repositories;
 
-public class Vendor<TOptions> : IArticleRepository where TOptions : class, IVendorSettings
+public class Vendor<TOptions> : IArticleProvider where TOptions : class, IVendorSettings
 {
     private readonly HttpClient _httpClient;
 
