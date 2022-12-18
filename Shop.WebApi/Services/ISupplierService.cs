@@ -4,6 +4,8 @@ namespace Shop.WebApi.Services;
 
 public interface ISupplierService
 {
-    void BuyArticle(Article article, int buyerId);
-    Task<Article> GetArticeAsync(int id, int maxExpectedPrice = 200);
+    Task<Article?> GetArticleAsync(
+        int id, 
+        int maxExpectedPrice = 200, 
+        CancellationToken cancellationToken = default);
 }

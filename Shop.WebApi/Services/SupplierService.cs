@@ -6,84 +6,40 @@ namespace Shop.WebApi.Services;
 
 public class SupplierService : ISupplierService
 {
-    private readonly Db _db;
-    private readonly IEnumerable<IArticleProvider> _articleRepositories;
+    private readonly IEnumerable<IArticleProvider> _articleProviders;
 
-    public SupplierService(Db db, IEnumerable<IArticleProvider> articleRepositories)
+    public SupplierService(IEnumerable<IArticleProvider> articleProviders)
     {
-        _db = db;
-        _articleRepositories = articleRepositories;
+        _articleProviders = articleProviders;
     }
 
-    public async Task<Article> GetArticeAsync(int id, int maxExpectedPrice = 200)
+    public async Task<Article?> GetArticleAsync(
+        int id,
+        int maxExpectedPrice = 200,
+        CancellationToken cancellationToken = default)
     {
-        Article article = null;
-        Article tmp = null;
-        foreach (var item in _articleRepositories)
-        {
-            var test = item is Vendor<Dealer1Settings>;
-            if (test)
-            {
-                return await item.GetArticleAsync(id);
-            }
-        }
-        //bool articleExists;
-        //    if (maxExpectedPrice < tmp.ArticlePrice)
-        //    {
-        //        articleExists = await _warehouse.ArticleInInventoryAsync(id);
-        //        if (articleExists)
-        //        {
-        //            tmp = await _warehouse.GetArticleAsync(id);
-        //            if (maxExpectedPrice < tmp.ArticlePrice)
-        //            {
-        //                articleExists = await _dealer1.ArticleInInventoryAsync(id);
-        //                if (articleExists)
-        //                {
-        //                    tmp = await _dealer1.GetArticleAsync(id);
-        //                    if (maxExpectedPrice < tmp.ArticlePrice)
-        //                    {
-        //                        articleExists = await _dealer2.ArticleInInventoryAsync(id);
-        //                        if (articleExists)
-        //                        {
-        //                            tmp = await _dealer2.GetArticleAsync(id);
-        //                            if (maxExpectedPrice < tmp.ArticlePrice)
-        //                            {
-        //                                article = tmp;
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
+        Article? article = await FindArticleAsync<Warehouse>(id, maxExpectedPrice, cancellationToken)
+            ?? await FindArticleAsync<Vendor<Dealer1Settings>>(id, maxExpectedPrice, cancellationToken)
+            ?? await FindArticleAsync<Vendor<Dealer2Settings>>(id, maxExpectedPrice, cancellationToken);
 
         return article;
     }
 
-    public void BuyArticle(Article article, int buyerId)
+    private async Task<Article?> FindArticleAsync<T>(
+        int id, 
+        int maxPrice, 
+        CancellationToken cancellationToken)
     {
-        var id = article.Id;
-        if (article == null)
+        Article? article = null;
+        var provider = _articleProviders.First(ap => ap.GetType() == typeof(T));
+        if (await provider.ArticleInInventoryAsync(id, cancellationToken))
         {
-            throw new Exception("Could not order article");
+            article = await provider.GetArticleAsync(id, cancellationToken);
+            if (article != null && article.ArticlePrice <= maxPrice)
+            {
+                return article;
+            }
         }
-
-        article.IsSold = true;
-        article.SoldDate = DateTime.Now;
-        article.BuyerUserId = buyerId;
-
-        try
-        {
-            _db.Save(article);
-            //_logger.LogInformation("Article with id {id} is sold.", id);
-        }
-        catch (ArgumentNullException ex)
-        {
-            //_logger.LogError("Could not save article with id={id}.", id);
-            throw new Exception("Could not save article with id");
-        }
-        catch (Exception)
-        {
-        }
+        return article;
     }
 }

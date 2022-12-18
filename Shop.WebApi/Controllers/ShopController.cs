@@ -19,15 +19,20 @@ public class ShopController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetArtice(int id, int maxExpectedPrice = 200)
+    public async Task<IActionResult> GetArtice(int id, int maxExpectedPrice = 200, CancellationToken cancellationToken = default)
     {
-        return Ok(await _supplierService.GetArticeAsync(id, maxExpectedPrice));
+        var article = await _supplierService.GetArticleAsync(id, maxExpectedPrice, cancellationToken);
+        if (article == null)
+        {
+            return NotFound();
+        }
+        return Ok(article);
     }
 
     [HttpPost]
     public void BuyArticle(Article article, int buyerId)
     {
         _logger.LogDebug("Trying to sell article with id={id}.", article.Id);
-        _supplierService.BuyArticle(article, buyerId);
+        //_supplierService.BuyArticle(article, buyerId);
     }
 }

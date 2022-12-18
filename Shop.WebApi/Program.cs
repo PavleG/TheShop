@@ -13,9 +13,9 @@ builder.Services.AddScoped<IArticleProvider, Warehouse>();
 builder.Services.AddHttpClient<IArticleProvider, Vendor<Dealer1Settings>>();
 builder.Services.AddHttpClient<IArticleProvider, Vendor<Dealer2Settings>>();
 
+builder.Services.AddScoped<ISupplierService, SupplierService>();
 //builder.Services.Decorate<IArticleRepository, CachedSupplier>();
 builder.Services.AddMemoryCache();
-builder.Services.AddScoped<ISupplierService, SupplierService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

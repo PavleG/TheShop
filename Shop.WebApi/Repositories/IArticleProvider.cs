@@ -2,7 +2,7 @@
 
 namespace Shop.WebApi.Repositories
 {
-    public interface IArticleRepository
+    public interface IArticleProvider
     {
         Task<bool> ArticleInInventoryAsync(int id, CancellationToken cancellationToken = default);
         Task<Article?> GetArticleAsync(int id, CancellationToken cancellationToken = default);
