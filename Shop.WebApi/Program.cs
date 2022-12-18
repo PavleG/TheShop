@@ -1,5 +1,6 @@
 using Shop.WebApi.Configurations;
 using Shop.WebApi.Repositories;
+using Shop.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,11 +9,13 @@ builder.Services.Configure<Dealer1Settings>(builder.Configuration.GetSection(nam
 builder.Services.Configure<Dealer2Settings>(builder.Configuration.GetSection(nameof(Dealer2Settings)));
 
 builder.Services.AddScoped<Db>();
-builder.Services.AddHttpClient<IArticleRepository, Dealer1>();
-builder.Services.AddHttpClient<IArticleRepository, Dealer2>();
 builder.Services.AddScoped<IArticleRepository, Warehouse>();
-builder.Services.Decorate<IArticleRepository, CachedSupplier>();
+builder.Services.AddHttpClient<IArticleRepository, Vendor<Dealer1Settings>>();
+builder.Services.AddHttpClient<IArticleRepository, Vendor<Dealer2Settings>>();
 
+//builder.Services.Decorate<IArticleRepository, CachedSupplier>();
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<ISupplierService, SupplierService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

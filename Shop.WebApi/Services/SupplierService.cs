@@ -1,4 +1,5 @@
-﻿using Shop.WebApi.Models;
+﻿using Shop.WebApi.Configurations;
+using Shop.WebApi.Models;
 using Shop.WebApi.Repositories;
 
 namespace Shop.WebApi.Services;
@@ -6,53 +7,61 @@ namespace Shop.WebApi.Services;
 public class SupplierService : ISupplierService
 {
     private readonly Db _db;
-    private readonly CachedSupplier _cachedSupplier;
-    private readonly Warehouse _warehouse;
-    private readonly Dealer1 _dealer1;
-    private readonly Dealer2 _dealer2;
-    public SupplierService(Db db, CachedSupplier cachedSupplier, Warehouse warehouse,
-        Dealer1 dealer1, Dealer2 dealer2)
+    private readonly IEnumerable<IArticleRepository> _articleRepositories;
+
+    //private readonly Warehouse _warehouse;
+    //private readonly Dealer1 _dealer1;
+    //private readonly Dealer2 _dealer2;
+    public SupplierService(Db db, IEnumerable<IArticleRepository> articleRepositories)
     {
         _db = db;
-        _cachedSupplier = cachedSupplier;
-        _warehouse = warehouse;
-        _dealer1 = dealer1;
-        _dealer2 = dealer2;
+        _articleRepositories = articleRepositories;
+        //_warehouse = (Warehouse)articleRepositories.FirstOrDefault(r => r.GetType() == typeof(Warehouse));
+        //_dealer1 = (Dealer1) articleRepositories.FirstOrDefault(r => r.GetType() == typeof(Dealer1));
+        //_dealer2 = (Dealer2) articleRepositories.FirstOrDefault(r => r.GetType() == typeof(Dealer2));
     }
 
     public async Task<Article> GetArticeAsync(int id, int maxExpectedPrice = 200)
     {
         Article article = null;
         Article tmp = null;
-        bool articleExists;
-            if (maxExpectedPrice < tmp.ArticlePrice)
+        foreach (var item in _articleRepositories)
+        {
+            var test = item is Vendor<Dealer1Settings>;
+            if (test)
             {
-                articleExists = await _warehouse.ArticleInInventoryAsync(id);
-                if (articleExists)
-                {
-                    tmp = await _warehouse.GetArticleAsync(id);
-                    if (maxExpectedPrice < tmp.ArticlePrice)
-                    {
-                        articleExists = await _dealer1.ArticleInInventoryAsync(id);
-                        if (articleExists)
-                        {
-                            tmp = await _dealer1.GetArticleAsync(id);
-                            if (maxExpectedPrice < tmp.ArticlePrice)
-                            {
-                                articleExists = await _dealer2.ArticleInInventoryAsync(id);
-                                if (articleExists)
-                                {
-                                    tmp = await _dealer2.GetArticleAsync(id);
-                                    if (maxExpectedPrice < tmp.ArticlePrice)
-                                    {
-                                        article = tmp;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                return await item.GetArticleAsync(id);
             }
+        }
+        //bool articleExists;
+        //    if (maxExpectedPrice < tmp.ArticlePrice)
+        //    {
+        //        articleExists = await _warehouse.ArticleInInventoryAsync(id);
+        //        if (articleExists)
+        //        {
+        //            tmp = await _warehouse.GetArticleAsync(id);
+        //            if (maxExpectedPrice < tmp.ArticlePrice)
+        //            {
+        //                articleExists = await _dealer1.ArticleInInventoryAsync(id);
+        //                if (articleExists)
+        //                {
+        //                    tmp = await _dealer1.GetArticleAsync(id);
+        //                    if (maxExpectedPrice < tmp.ArticlePrice)
+        //                    {
+        //                        articleExists = await _dealer2.ArticleInInventoryAsync(id);
+        //                        if (articleExists)
+        //                        {
+        //                            tmp = await _dealer2.GetArticleAsync(id);
+        //                            if (maxExpectedPrice < tmp.ArticlePrice)
+        //                            {
+        //                                article = tmp;
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
 
         return article;
     }
