@@ -2,7 +2,7 @@
 
 namespace Shop.WebApi.Services;
 
-public class Warehouse
+public class Warehouse : IArticleRepository
 {
     public bool ArticleInInventory(int id)
     {

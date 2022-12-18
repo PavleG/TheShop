@@ -5,11 +5,11 @@ using Shop.WebApi.Models;
 
 namespace Shop.WebApi.Services;
 
-public class Dealer1
+public class Dealer2 : IArticleRepository
 {
     private readonly string _supplierUrl;
 
-    public Dealer1(IOptions<Dealer1Settings> settings)
+    public Dealer2(IOptions<Dealer2Settings> settings)
     {
         _supplierUrl = settings.Value.Url;
     }
@@ -18,7 +18,7 @@ public class Dealer1
     {
         using (var client = new HttpClient())
         {
-            var response = client.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"{_supplierUrl}/ArticleInInventory/{id}"));
+            var response = client.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"{_supplierUrl}/Supplier/ArticleInInventory/{id}"));
             var hasArticle = JsonConvert.DeserializeObject<bool>(response.Result.Content.ReadAsStringAsync().Result);
 
             return hasArticle;
@@ -29,7 +29,7 @@ public class Dealer1
     {
         using (var client = new HttpClient())
         {
-            var response = client.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"{_supplierUrl}/ArticleInInventory/{id}"));
+            var response = client.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"{_supplierUrl}/Supplier/ArticleInInventory/{id}"));
             var article = JsonConvert.DeserializeObject<Article>(response.Result.Content.ReadAsStringAsync().Result);
 
             return article;

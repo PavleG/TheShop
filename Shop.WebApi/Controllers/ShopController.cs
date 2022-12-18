@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Shop.WebApi.Models;
-using Shop.WebApi.Services;
+using Shop.WebApi.Repositories;
 
 namespace Shop.WebApi.Controllers;
 

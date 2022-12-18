@@ -1,5 +1,5 @@
 using Shop.WebApi.Configurations;
-using Shop.WebApi.Services;
+using Shop.WebApi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
