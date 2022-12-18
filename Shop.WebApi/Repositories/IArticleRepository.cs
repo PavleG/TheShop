@@ -1,10 +1,10 @@
 ﻿using Shop.WebApi.Models;
 
-namespace Shop.WebApi.Services
+namespace Shop.WebApi.Repositories
 {
     public interface IArticleRepository
     {
-        bool ArticleInInventory(int id);
-        Article GetArticle(int id);
+        Task<bool> ArticleInInventoryAsync(int id);
+        Task<Article?> GetArticleAsync(int id);
     }
 }

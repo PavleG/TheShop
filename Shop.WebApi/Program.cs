@@ -9,8 +9,8 @@ builder.Services.Configure<Dealer2Settings>(builder.Configuration.GetSection(nam
 
 builder.Services.AddScoped<Db>();
 builder.Services.AddScoped<CachedSupplier>();
-builder.Services.AddScoped<Dealer1>();
-builder.Services.AddScoped<Dealer2>();
+builder.Services.AddHttpClient<Dealer1>();
+builder.Services.AddHttpClient<Dealer2>();
 builder.Services.AddScoped<Warehouse>();
 
 builder.Services.AddControllers();

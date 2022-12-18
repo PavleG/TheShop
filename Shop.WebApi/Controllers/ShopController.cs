@@ -39,22 +39,22 @@ public class ShopController : ControllerBase
             tmp = _cachedSupplier.GetArticle(id);
             if (maxExpectedPrice < tmp.ArticlePrice)
             {
-                articleExists = _warehouse.ArticleInInventory(id);
+                articleExists = _warehouse.ArticleInInventoryAsync(id);
                 if (articleExists)
                 {
-                    tmp = _warehouse.GetArticle(id);
+                    tmp = _warehouse.GetArticleAsync(id);
                     if (maxExpectedPrice < tmp.ArticlePrice)
                     {
-                        articleExists = _dealer1.ArticleInInventory(id);
+                        articleExists = _dealer1.ArticleInInventoryAsync(id);
                         if (articleExists)
                         {
-                            tmp = _dealer1.GetArticle(id);
+                            tmp = _dealer1.GetArticleAsync(id);
                             if (maxExpectedPrice < tmp.ArticlePrice)
                             {
-                                articleExists = _dealer2.ArticleInInventory(id);
+                                articleExists = _dealer2.ArticleInInventoryAsync(id);
                                 if (articleExists)
                                 {
-                                    tmp = _dealer2.GetArticle(id);
+                                    tmp = _dealer2.GetArticleAsync(id);
                                     if (maxExpectedPrice < tmp.ArticlePrice)
                                     {
                                         article = tmp;

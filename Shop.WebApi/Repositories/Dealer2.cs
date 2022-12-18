@@ -3,36 +3,36 @@ using Newtonsoft.Json;
 using Shop.WebApi.Configurations;
 using Shop.WebApi.Models;
 
-namespace Shop.WebApi.Services;
+namespace Shop.WebApi.Repositories;
 
 public class Dealer2 : IArticleRepository
 {
-    private readonly string _supplierUrl;
+    private readonly HttpClient _httpClient;
 
-    public Dealer2(IOptions<Dealer2Settings> settings)
+    public Dealer2(HttpClient httpClient, IOptions<Dealer2Settings> settings)
     {
-        _supplierUrl = settings.Value.Url;
+        _httpClient = httpClient;
+        if (!string.IsNullOrEmpty(settings.Value.Url))
+        {
+            _httpClient.BaseAddress = new Uri(settings.Value.Url);
+        }
+        else
+        {
+            throw new ArgumentNullException(paramName: nameof(Dealer2Settings), message: $"Missing url base addess.");
+        }
+
     }
 
-    public bool ArticleInInventory(int id)
+    public async Task<bool> ArticleInInventoryAsync(int id)
     {
-        using (var client = new HttpClient())
-        {
-            var response = client.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"{_supplierUrl}/Supplier/ArticleInInventory/{id}"));
-            var hasArticle = JsonConvert.DeserializeObject<bool>(response.Result.Content.ReadAsStringAsync().Result);
-
-            return hasArticle;
-        }
+        var methodRoute = $"/ArticleInInventory/{id}";
+        var response = await _httpClient.GetFromJsonAsync<bool>(_httpClient.BaseAddress + methodRoute);
+        return response;
     }
 
-    public Article GetArticle(int id)
+    public async Task<Article?> GetArticleAsync(int id)
     {
-        using (var client = new HttpClient())
-        {
-            var response = client.SendAsync(new HttpRequestMessage(HttpMethod.Get, $"{_supplierUrl}/Supplier/ArticleInInventory/{id}"));
-            var article = JsonConvert.DeserializeObject<Article>(response.Result.Content.ReadAsStringAsync().Result);
-
-            return article;
-        }
+        var response = await _httpClient.GetFromJsonAsync<Article>(_httpClient.BaseAddress + $"/{id}");
+        return response;
     }
 }
