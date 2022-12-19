@@ -19,8 +19,8 @@ public class SupplierService : ISupplierService
         CancellationToken cancellationToken = default)
     {
         Article? article = await FindArticleAsync<Warehouse>(id, maxExpectedPrice, cancellationToken)
-            ?? await FindArticleAsync<Vendor<Dealer1Settings>>(id, maxExpectedPrice, cancellationToken)
-            ?? await FindArticleAsync<Vendor<Dealer2Settings>>(id, maxExpectedPrice, cancellationToken);
+            ?? await FindArticleAsync<Vendor<Vendor1Settings>>(id, maxExpectedPrice, cancellationToken)
+            ?? await FindArticleAsync<Vendor<Vendor2Settings>>(id, maxExpectedPrice, cancellationToken);
 
         return article;
     }
