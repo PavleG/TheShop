@@ -2,67 +2,55 @@
 using Microsoft.AspNetCore.Http;
 using Vendor.WebApi.Models;
 using Vendor.WebApi.Services;
+using Vendor.WebApi.Enumerations;
 
 namespace Vendor.WebApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class SupplierController : ControllerBase
 {
-    private readonly DatabaseDriver _databaseDriver;
-    private readonly SupplierService _supplier;
+    private readonly ISaleService _saleService;
+    private readonly ISupplierService _supplierService;
     private readonly ILogger<SupplierController> _logger;
 
-    public SupplierController(DatabaseDriver databaseDriver, SupplierService supplier, ILogger<SupplierController> logger)
+    public SupplierController(ISaleService saleService, ISupplierService supplier, ILogger<SupplierController> logger)
     {
-        _databaseDriver = databaseDriver;
-        _supplier = supplier;
+        _saleService = saleService;
+        _supplierService = supplier;
         _logger = logger;
     }
-    [HttpGet("ArticleInInventory/{id}")]
+    [HttpGet("ArticleInInventory/{id:int}")]
     public bool ArticleInInventory(int id)
     {
-        return _supplier.ArticleInInventory(id);
+        return _supplierService.IsInInventory(id);
     }
-    [HttpGet("{id}")]
-    public Article GetArtice(int id)
+    [HttpGet("{id:int}")]
+    public IActionResult GetArtice(int id)
     {
-        var articleExists = _supplier.ArticleInInventory(id);
-        if (articleExists)
+        var article = _supplierService.GetArtice(id);
+        if (article != null)
         {
-            return _supplier.GetArticle(id);
+            return Ok(article);
         }
-        else
-        {
-            throw new Exception("Article does not exist.");
-        }
+        return NotFound();
     }
     [HttpPost]
-    public void BuyArticle(Article article, int buyerId)
+    public IActionResult BuyArticle(BuyRequestDto requestData)
     {
-        var id = article.ID;
-        if (article == null)
+        _logger.LogInformation("Trying to sell article with id={id} to buyer with id={buyerId}.",
+             requestData.ArticleInfo.Id, requestData.BuyerId);
+        var response = _saleService.SaleArticle(requestData.ArticleInfo, requestData.BuyerId);
+        switch (response)
         {
-            throw new Exception("Could not order article");
-        }
-
-        _logger.LogDebug("Trying to sell article with id={id}", id);
-
-        article.IsSold = true;
-        article.SoldDate = DateTime.Now;
-        article.BuyerUserId = buyerId;
-
-        try
-        {
-            _databaseDriver.Save(article);
-            _logger.LogInformation("Article with id={id} is sold.", id);
-        }
-        catch (ArgumentNullException ex)
-        {
-            _logger.LogError("Could not save article with id={id}", id);
-            throw new Exception("Could not save article with id");
-        }
-        catch (Exception)
-        {
+            case SaleResponse.Success:
+                _logger.LogInformation("Article with id {id} is sold.", requestData.ArticleInfo.Id);
+                return NoContent();
+            case SaleResponse.Error:
+                _logger.LogError("Could not save article with id {id}. ", requestData.ArticleInfo.Id);
+                return BadRequest();
+            default:
+                _logger.LogError($"{nameof(BuyArticle)} failiure.");
+                return Problem();
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using Vendor.WebApi.Models;
 
-namespace Vendor.WebApi.Services;
+namespace Vendor.WebApi.Repositories;
 
-public class DatabaseDriver
+public class SalesRepository : ISalesRepository
 {
     private readonly List<Article> _articles = new();
 
     public Article GetById(int id)
     {
-        return _articles.Single(x => x.ID == id);
+        return _articles.Single(x => x.Id == id);
     }
 
     public void Save(Article article)

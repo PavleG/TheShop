@@ -1,19 +1,23 @@
 ﻿using Vendor.WebApi.Models;
+using Vendor.WebApi.Repositories;
+
 namespace Vendor.WebApi.Services;
-public class SupplierService
+
+public class SupplierService : ISupplierService
 {
-    public bool ArticleInInventory(int id)
+    private readonly SupplierRepository _supplierRepository;
+
+    public SupplierService(SupplierRepository supplierRepository)
     {
-        return new Random().NextDouble() >= 0.5;
+        _supplierRepository = supplierRepository;
     }
 
-    public Article GetArticle(int id)
+    public bool IsInInventory(int id)
     {
-        return new Article()
-        {
-            ID = id,
-            ArticleName = $"Article {id}",
-            ArticlePrice = new Random().Next(100, 500)
-        };
+        return _supplierRepository.ArticleInInventory(id);
+    }
+    public Article? GetArtice(int id)
+    {
+        return _supplierRepository.ArticleInInventory(id) ? _supplierRepository.GetArticle(id) : null;
     }
 }
