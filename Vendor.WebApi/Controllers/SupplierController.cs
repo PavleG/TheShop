@@ -20,9 +20,16 @@ public class SupplierController : ControllerBase
         _logger = logger;
     }
     [HttpGet("ArticleInInventory/{id:int}")]
-    public bool ArticleInInventory(int id)
+    public IActionResult ArticleInInventory(int id)
     {
-        return _supplierService.IsInInventory(id);
+        if (_supplierService.IsInInventory(id))
+        {
+            return NoContent();
+        }
+        else
+        {
+            return NotFound();
+        }
     }
     [HttpGet("{id:int}")]
     public IActionResult GetArtice(int id)

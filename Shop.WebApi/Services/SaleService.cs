@@ -6,11 +6,11 @@ namespace Shop.WebApi.Services;
 
 public class SaleService : ISaleService
 {
-    private readonly SalesRepository _db;
+    private readonly ISalesRepository _salesRepository;
 
-    public SaleService(SalesRepository db)
+    public SaleService(ISalesRepository salesRepository)
     {
-        _db = db;
+        _salesRepository = salesRepository;
     }
 
     public SaleResponse SaleArticle(Article article, int buyerId)
@@ -27,7 +27,7 @@ public class SaleService : ISaleService
 
         try
         {
-            _db.Save(soldAricle);
+            _salesRepository.Save(soldAricle);
             return SaleResponse.Success;
         }
         catch (Exception)

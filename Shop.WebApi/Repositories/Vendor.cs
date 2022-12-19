@@ -20,8 +20,8 @@ public class Vendor<TOptions> : IArticleProvider where TOptions : VendorSettings
     {
         var relativeUri = $"{_settings.CheckArticleRoute.Trim('/')}/{id}";
         var requestUri = new Uri(_httpClient.BaseAddress!, relativeUri);
-        var response = await _httpClient.GetFromJsonAsync<bool>(requestUri, cancellationToken);
-        return response;
+        var response = await _httpClient.GetAsync(requestUri, cancellationToken);
+        return response.IsSuccessStatusCode;
     }
 
     public async Task<Article?> GetArticleAsync(int id, CancellationToken cancellationToken = default)

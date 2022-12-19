@@ -13,7 +13,7 @@ builder.Services.AddOptions<Vendor2Settings>()
     .BindConfiguration(nameof(Vendor2Settings))
     .ValidateDataAnnotations();
 
-builder.Services.AddScoped<SalesRepository>();
+builder.Services.AddScoped<ISalesRepository, SalesRepository>();
 builder.Services.AddScoped<IArticleProvider, Warehouse>();
 
 builder.Services.AddHttpClient<IArticleProvider, Vendor<Vendor1Settings>>();

@@ -5,9 +5,9 @@ namespace Vendor.WebApi.Services;
 
 public class SupplierService : ISupplierService
 {
-    private readonly SupplierRepository _supplierRepository;
+    private readonly ISupplierRepository _supplierRepository;
 
-    public SupplierService(SupplierRepository supplierRepository)
+    public SupplierService(ISupplierRepository supplierRepository)
     {
         _supplierRepository = supplierRepository;
     }

@@ -6,9 +6,9 @@ namespace Vendor.WebApi.Services;
 
 public class SaleService : ISaleService
 {
-    private readonly SalesRepository _salesRepository;
+    private readonly ISalesRepository _salesRepository;
 
-    public SaleService(SalesRepository salesRepository)
+    public SaleService(ISalesRepository salesRepository)
     {
         _salesRepository = salesRepository;
     }
