@@ -26,7 +26,7 @@ public class CachedSupplier : ISupplierService
             key,
             async entry =>
             {
-                entry.SetAbsoluteExpiration(TimeSpan.FromHours(2));
+                entry.SetAbsoluteExpiration(TimeSpan.FromSeconds(30));
                 return await _supplierService.GetArticleAsync(id, maxExpectedPrice, cancellationToken);
             });
     }

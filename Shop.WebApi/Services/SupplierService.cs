@@ -40,6 +40,6 @@ public class SupplierService : ISupplierService
                 return article;
             }
         }
-        return article;
+        return null;
     }
 }

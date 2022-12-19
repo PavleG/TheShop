@@ -20,7 +20,7 @@ builder.Services.AddHttpClient<IArticleProvider, Vendor<Vendor1Settings>>();
 builder.Services.AddHttpClient<IArticleProvider, Vendor<Vendor2Settings>>();
 
 builder.Services.AddScoped<ISupplierService, SupplierService>();
-//builder.Services.Decorate<IArticleRepository, CachedSupplier>();
+builder.Services.Decorate<ISupplierService, CachedSupplier>();
 builder.Services.AddMemoryCache();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
