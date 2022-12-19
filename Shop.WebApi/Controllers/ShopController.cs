@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Shop.WebApi.Enumerations;
 using Shop.WebApi.Models;
 using Shop.WebApi.Services;
+using System.Net;
 
 namespace Shop.WebApi.Controllers;
 
@@ -28,6 +29,11 @@ public class ShopController : ControllerBase
         {
             var article = await _supplierService.GetArticleAsync(id, maxExpectedPrice, cancellationToken);
             return article == null ? NotFound() : Ok(article);
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return StatusCode((int) HttpStatusCode.ServiceUnavailable);
         }
         catch (Exception ex)
         {
