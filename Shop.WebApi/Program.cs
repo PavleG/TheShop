@@ -13,12 +13,13 @@ builder.Services.AddOptions<Vendor2Settings>()
     .BindConfiguration(nameof(Vendor2Settings))
     .ValidateDataAnnotations();
 
-builder.Services.AddScoped<Db>();
+builder.Services.AddScoped<SalesRepository>();
 builder.Services.AddScoped<IArticleProvider, Warehouse>();
 
 builder.Services.AddHttpClient<IArticleProvider, Vendor<Vendor1Settings>>();
 builder.Services.AddHttpClient<IArticleProvider, Vendor<Vendor2Settings>>();
 
+builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<ISupplierService, SupplierService>();
 builder.Services.Decorate<ISupplierService, CachedSupplier>();
 builder.Services.AddMemoryCache();

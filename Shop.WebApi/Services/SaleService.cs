@@ -1,41 +1,38 @@
-﻿using Shop.WebApi.Models;
+﻿using Shop.WebApi.Enumerations;
+using Shop.WebApi.Models;
 using Shop.WebApi.Repositories;
 
 namespace Shop.WebApi.Services;
 
-public class SaleService
+public class SaleService : ISaleService
 {
-    private readonly Db _db;
+    private readonly SalesRepository _db;
 
-    public SaleService(Db db)
+    public SaleService(SalesRepository db)
     {
         _db = db;
     }
 
-    public void BuyArticle(Article article, int buyerId)
+    public SaleResponse SaleArticle(Article article, int buyerId)
     {
-        var id = article.Id;
-        if (article == null)
+        SoldArticle soldAricle = new()
         {
-            throw new Exception("Could not order article");
-        }
-
-        article.IsSold = true;
-        article.SoldDate = DateTime.Now;
-        article.BuyerUserId = buyerId;
+            Id = article.Id,
+            ArticleName = article.ArticleName,
+            ArticlePrice = article.ArticlePrice,
+            IsSold = true,
+            SoldDate = DateTime.Now,
+            BuyerUserId = buyerId,
+        };
 
         try
         {
-            _db.Save(article);
-            //_logger.LogInformation("Article with id {id} is sold.", id);
-        }
-        catch (ArgumentNullException ex)
-        {
-            //_logger.LogError("Could not save article with id={id}.", id);
-            throw new Exception("Could not save article with id");
+            _db.Save(soldAricle);
+            return SaleResponse.Success;
         }
         catch (Exception)
         {
+            return SaleResponse.Error;
         }
     }
 }

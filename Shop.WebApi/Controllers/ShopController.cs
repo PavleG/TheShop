@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Shop.WebApi.Enumerations;
 using Shop.WebApi.Models;
 using Shop.WebApi.Services;
 
@@ -10,12 +11,14 @@ namespace Shop.WebApi.Controllers;
 public class ShopController : ControllerBase
 {
     private readonly ISupplierService _supplierService;
+    private readonly ISaleService _saleService;
     private readonly ILogger<ShopController> _logger;
 
-    public ShopController(ISupplierService supplierService, ILogger<ShopController> logger)
+    public ShopController(ISupplierService supplierService, ISaleService saleService, ILogger<ShopController> logger)
     {
         _supplierService = supplierService;
         _logger = logger;
+        _saleService = saleService;
     }
 
     [HttpGet("{id}")]
@@ -35,9 +38,22 @@ public class ShopController : ControllerBase
     }
 
     [HttpPost]
-    public void BuyArticle(Article article, int buyerId)
+    public IActionResult BuyArticle(BuyRequestDto requestData)
     {
-        _logger.LogDebug("Trying to sell article with id={id}.", article.Id);
-        //_supplierService.BuyArticle(article, buyerId);
+        _logger.LogInformation("Trying to sell article with id={id} to buyer with id={buyerId}.", 
+            requestData.ArticleInfo.Id, requestData.BuyerId);
+        var response = _saleService.SaleArticle(requestData.ArticleInfo, requestData.BuyerId);
+        switch (response)
+        {
+            case SaleResponse.Success:
+                _logger.LogInformation("Article with id {id} is sold.", requestData.ArticleInfo.Id);
+                return NoContent();
+            case SaleResponse.Error:
+                _logger.LogError("Could not save article with id {id}. ", requestData.ArticleInfo.Id);
+                return BadRequest();
+            default:
+                _logger.LogError($"{nameof(BuyArticle)} failiure.");
+                return Problem();
+        }
     }
 }

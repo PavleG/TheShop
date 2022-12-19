@@ -1,10 +1,7 @@
 ﻿namespace Shop.WebApi.Models;
-public class Article
+public record Article
 {
-    public int Id { get; set; }
-    public string ArticleName { get; set; }
-    public int ArticlePrice { get; set; }
-    public bool IsSold { get; set; }
-    public DateTime SoldDate { get; set; }
-    public int BuyerUserId { get; set; }
+    public int Id { get; init; }
+    public string ArticleName { get; init; }
+    public int ArticlePrice { get; init; }
 }
