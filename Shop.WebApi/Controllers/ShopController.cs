@@ -44,7 +44,7 @@ public class ShopController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult BuyArticle(BuyRequestDto requestData)
+    public IActionResult BuyArticle(BuyRequest requestData)
     {
         _logger.LogInformation("Trying to sell article with id={id} to buyer with id={buyerId}.", 
             requestData.ArticleInfo.Id, requestData.BuyerId);

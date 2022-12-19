@@ -1,6 +1,5 @@
 ﻿using Shop.WebApi.Configurations;
 using Shop.WebApi.Models;
-using Shop.WebApi.Repositories;
 
 namespace Shop.WebApi.Services;
 
@@ -19,8 +18,8 @@ public class SupplierService : ISupplierService
         CancellationToken cancellationToken = default)
     {
         Article? article = await FindArticleAsync<Warehouse>(id, maxExpectedPrice, cancellationToken)
-            ?? await FindArticleAsync<Vendor<Vendor1Settings>>(id, maxExpectedPrice, cancellationToken)
-            ?? await FindArticleAsync<Vendor<Vendor2Settings>>(id, maxExpectedPrice, cancellationToken);
+            ?? await FindArticleAsync<VendorClient<Vendor1Settings>>(id, maxExpectedPrice, cancellationToken)
+            ?? await FindArticleAsync<VendorClient<Vendor2Settings>>(id, maxExpectedPrice, cancellationToken);
 
         return article;
     }

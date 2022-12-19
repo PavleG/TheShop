@@ -1,6 +1,6 @@
 ﻿using Shop.WebApi.Models;
 
-namespace Shop.WebApi.Repositories
+namespace Shop.WebApi.Services
 {
     public interface IArticleProvider
     {

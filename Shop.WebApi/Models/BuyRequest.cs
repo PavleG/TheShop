@@ -2,7 +2,7 @@
 
 namespace Shop.WebApi.Models;
 
-public record BuyRequestDto
+public record BuyRequest
 {
     [Required(ErrorMessage = "Buyer ID is missing.")]
     public int BuyerId { get; init; }

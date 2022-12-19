@@ -4,14 +4,14 @@ using Shop.WebApi.Models;
 using System.Net;
 using System.Text.Json;
 
-namespace Shop.WebApi.Repositories;
+namespace Shop.WebApi.Services;
 
-public class Vendor<TOptions> : IArticleProvider where TOptions : VendorSettings
+public class VendorClient<TOptions> : IArticleProvider where TOptions : VendorSettings
 {
     private readonly HttpClient _httpClient;
     private readonly VendorSettings _settings;
 
-    public Vendor(HttpClient httpClient, IOptions<TOptions> settings)
+    public VendorClient(HttpClient httpClient, IOptions<TOptions> settings)
     {
         _httpClient = httpClient;
         _settings = settings.Value;
@@ -38,7 +38,8 @@ public class Vendor<TOptions> : IArticleProvider where TOptions : VendorSettings
             var article = JsonSerializer.Deserialize<Article>(response, options);
             return article;
         }
-        else if (httpResponse.StatusCode == HttpStatusCode.NotFound) {
+        else if (httpResponse.StatusCode == HttpStatusCode.NotFound)
+        {
             return null;
         }
         else

@@ -16,8 +16,8 @@ builder.Services.AddOptions<Vendor2Settings>()
 builder.Services.AddScoped<ISalesRepository, SalesRepository>();
 builder.Services.AddScoped<IArticleProvider, Warehouse>();
 
-builder.Services.AddHttpClient<IArticleProvider, Vendor<Vendor1Settings>>();
-builder.Services.AddHttpClient<IArticleProvider, Vendor<Vendor2Settings>>();
+builder.Services.AddHttpClient<IArticleProvider, VendorClient<Vendor1Settings>>();
+builder.Services.AddHttpClient<IArticleProvider, VendorClient<Vendor2Settings>>();
 
 builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<ISupplierService, SupplierService>();

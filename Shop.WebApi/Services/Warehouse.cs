@@ -1,12 +1,12 @@
 ﻿using Shop.WebApi.Models;
 
-namespace Shop.WebApi.Repositories;
+namespace Shop.WebApi.Services;
 
 public class Warehouse : IArticleProvider
 {
     public async Task<bool> ArticleInInventoryAsync(int id, CancellationToken cancellationToken = default)
     {
-        return await Task.Run(() => (new Random().NextDouble() >= 0.5));   
+        return await Task.Run(() => new Random().NextDouble() >= 0.5);
     }
 
     public async Task<Article?> GetArticleAsync(int id, CancellationToken cancellationToken = default)
