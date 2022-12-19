@@ -9,7 +9,7 @@ namespace Shop.WebApi.Tests;
 public class CachedSupplierTests
 {
     [Fact]
-    public void CachedSupplier_ShouldReturnArticle_WhenArticlePresentInCache()
+    public void CachedSupplier_ShouldReturnArticleFromCache_WhenArticlePresentInCache()
     {
         IMemoryCache memoryCacheMock = new MemoryCache(new MemoryCacheOptions());
         Mock<ISupplierService> supplierServiceMock = new Mock<ISupplierService>();
@@ -23,16 +23,35 @@ public class CachedSupplierTests
         result.Should().Be(article);
     }
     [Fact]
-    public void CachedSupplier_ShouldCallSupplierService_WhenArticleNotInCache()
+    public void CachedSupplier_ShouldReturnArticleFromService_WhenArticleNotInCache()
     {
         IMemoryCache memoryCacheMock = new MemoryCache(new MemoryCacheOptions());
         Mock<ISupplierService> supplierServiceMock = new Mock<ISupplierService>();
+        var id = It.IsAny<int>();
+        Article article = new Article() { Id = id, ArticleName = $"Article {id}", ArticlePrice = 100 };
+        supplierServiceMock.Setup<Article>(mock => mock.GetArticleAsync(id, 200, new CancellationToken()).Result).Returns(article);
 
         var sut = new CachedSupplier(memoryCacheMock, supplierServiceMock.Object);
 
-        var id = It.IsAny<int>();
         var result = sut.GetArticleAsync(id).Result;
-        result.Should().BeNull();
+        result.Should().Be(article);
         supplierServiceMock.Verify(mock => mock.GetArticleAsync(id, It.IsAny<int>(), new CancellationToken()), Times.Once);
+    }
+
+    [Fact]
+    public void CachedSupplier_ShouldSaveArticleToCache_WhenArticleNotInCache()
+    {
+        IMemoryCache memoryCacheMock = new MemoryCache(new MemoryCacheOptions());
+        Mock<ISupplierService> supplierServiceMock = new Mock<ISupplierService>();
+        var id = It.IsAny<int>();
+        Article article = new Article() { Id = id, ArticleName = $"Article {id}", ArticlePrice = 100 };
+        supplierServiceMock.Setup<Article>(mock => mock.GetArticleAsync(id, 200, new CancellationToken()).Result).Returns(article);
+
+        var sut = new CachedSupplier(memoryCacheMock, supplierServiceMock.Object);
+
+        var result = sut.GetArticleAsync(id).Result;
+
+        supplierServiceMock.Verify(mock => mock.GetArticleAsync(id, 200, new CancellationToken()), Times.Once);
+        memoryCacheMock.Get($"article-{id}").Should().Be(article);
     }
 }
