@@ -5,13 +5,19 @@ using Shop.WebApi.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.Configure<Dealer1Settings>(builder.Configuration.GetSection(nameof(Dealer1Settings)));
-builder.Services.Configure<Dealer2Settings>(builder.Configuration.GetSection(nameof(Dealer2Settings)));
+
+builder.Services.AddOptions<Vendor1Settings>()
+    .BindConfiguration(nameof(Vendor1Settings))
+    .ValidateDataAnnotations();
+builder.Services.AddOptions<Vendor2Settings>()
+    .BindConfiguration(nameof(Vendor2Settings))
+    .ValidateDataAnnotations();
 
 builder.Services.AddScoped<Db>();
 builder.Services.AddScoped<IArticleProvider, Warehouse>();
-builder.Services.AddHttpClient<IArticleProvider, Vendor<Dealer1Settings>>();
-builder.Services.AddHttpClient<IArticleProvider, Vendor<Dealer2Settings>>();
+
+builder.Services.AddHttpClient<IArticleProvider, Vendor<Vendor1Settings>>();
+builder.Services.AddHttpClient<IArticleProvider, Vendor<Vendor2Settings>>();
 
 builder.Services.AddScoped<ISupplierService, SupplierService>();
 //builder.Services.Decorate<IArticleRepository, CachedSupplier>();

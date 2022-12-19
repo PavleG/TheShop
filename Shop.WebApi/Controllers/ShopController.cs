@@ -21,12 +21,17 @@ public class ShopController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetArtice(int id, int maxExpectedPrice = 200, CancellationToken cancellationToken = default)
     {
-        var article = await _supplierService.GetArticleAsync(id, maxExpectedPrice, cancellationToken);
-        if (article == null)
+        try
         {
-            return NotFound();
+            var article = await _supplierService.GetArticleAsync(id, maxExpectedPrice, cancellationToken);
+            return article == null ? NotFound() : Ok(article);
         }
-        return Ok(article);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return Problem();
+        }
+        
     }
 
     [HttpPost]
